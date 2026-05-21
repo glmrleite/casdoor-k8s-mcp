@@ -299,6 +299,46 @@ make app-restart  # reinicia o pod
 
 ---
 
+## 🔧 Troubleshooting
+
+### Casdoor não sobe (CrashLoopBackOff)
+
+```bash
+kubectl logs -n casdoor deployment/casdoor
+kubectl describe pod -n casdoor -l app=casdoor
+```
+
+Causa mais comum: MySQL ainda não está pronto. Aguarde o pod MySQL entrar em `Running` antes que o Casdoor inicie corretamente.
+
+### Port-forward cai após algum tempo
+
+O `make forward-all` usa `kubectl port-forward` em background, que pode ser encerrado se a conexão com o cluster ficar instável. Rode novamente:
+
+```bash
+make forward-all
+```
+
+### MCP: erro de autenticação
+
+O Client ID e Client Secret para o MCP são os mesmos da aplicação registrada no Casdoor. Para encontrá-los:
+
+1. Acesse **http://localhost:8000** → **Applications** → **flask-demo**
+2. Copie o valor de **Client ID** e **Client Secret**
+
+### MCP Approach 2: servidor Node.js não inicializa
+
+```bash
+node ~/.claude/mcp-servers/casdoor/index.js
+```
+
+Se houver erro de módulo ausente, instale as dependências:
+
+```bash
+cd ~/.claude/mcp-servers/casdoor && npm install
+```
+
+---
+
 ## 📚 Referências
 
 ### 🔐 Autenticação e Identidade
