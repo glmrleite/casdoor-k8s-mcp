@@ -1,4 +1,4 @@
-<h1 align="center">Casdoor IAM no Kubernetes com AIvia MCP — OIDC/OAuth2 demo using Flask</h1>
+<h1 align="center">Casdoor IAM no Kubernetes com AI(MCP) — OIDC/OAuth2 demo using Flask</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Tipo-Lab%20de%20Autenticação-8e44ad?style=flat-square" />
