@@ -33,10 +33,38 @@ Esse padrão tem impacto direto na administração de identidade em larga escala
 
 ```mermaid
 flowchart LR
-    Browser -->|:5000| Flask["Flask Demo"]
-    Browser -->|:8000| Casdoor
-    Flask -->|"OAuth2 server-to-server\ncasdoor-svc:8000"| Casdoor
-    Casdoor -->|mysql-svc:3306| MySQL[(MySQL 8.0)]
+    subgraph local["💻 Local"]
+        Browser["🌐 Browser"]
+        Claude["🤖 Claude Agent"]
+        MCP["🔌 MCP Server\nNode.js"]
+    end
+
+    subgraph k8s["☸️ Kubernetes · Kind"]
+        Flask["🐍 Flask Demo"]
+        Casdoor["🛡️ Casdoor IAM"]
+        MySQL[("🗄️ MySQL 8.0")]
+    end
+
+    Browser -->|"port-forward :5000"| Flask
+    Browser -->|"port-forward :8000"| Casdoor
+    Flask -->|"OAuth2 / OIDC\ncasdoor-svc:8000"| Casdoor
+    Casdoor -->|"mysql-svc:3306"| MySQL
+    Claude -->|"linguagem natural"| MCP
+    MCP -->|"REST · /api/mcp\n:8000"| Casdoor
+
+    classDef browser  fill:#2980b9,color:#fff,stroke:none
+    classDef flask    fill:#27ae60,color:#fff,stroke:none
+    classDef casdoor  fill:#8e44ad,color:#fff,stroke:none
+    classDef mysql    fill:#e67e22,color:#fff,stroke:none
+    classDef ai       fill:#f39c12,color:#fff,stroke:none
+    classDef mcp      fill:#e74c3c,color:#fff,stroke:none
+
+    class Browser browser
+    class Flask flask
+    class Casdoor casdoor
+    class MySQL mysql
+    class Claude ai
+    class MCP mcp
 ```
 
 ---
