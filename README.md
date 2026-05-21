@@ -1,4 +1,4 @@
-<h1 align="center">Casdoor IAM no Kubernetes com AI(MCP) — OIDC/OAuth2 demo using Flask</h1>
+<h1 align="center">Casdoor IAM no Kubernetes com AI(MCP) OIDC/OAuth2 demo using Flask</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Tipo-Lab%20de%20Autenticação-8e44ad?style=flat-square" />
@@ -10,22 +10,22 @@
 
 <p align="center">
   Lab de autenticação com <a href="https://casdoor.ai/">Casdoor</a> rodando no Kubernetes,<br>
-  demonstrando o fluxo <strong>OIDC/OAuth2</strong> com uma aplicação Flask —<br>
+  demonstrando o fluxo <strong>OIDC/OAuth2</strong> com uma aplicação Flask<br>
   e como um agente de IA pode administrar o IdP em linguagem natural via <strong>MCP</strong>.
 </p>
 
 ---
 
-Toda aplicação que exige login precisa de um Identity Provider — um serviço centralizado que autentica o usuário e emite tokens que outras aplicações confiam. O protocolo que padroniza esse fluxo é o **OIDC (OpenID Connect)**, camada de identidade construída sobre o OAuth2.
+Toda aplicação que exige login precisa de um Identity Provider um serviço centralizado que autentica o usuário e emite tokens que outras aplicações confiam. O protocolo que padroniza esse fluxo é o **OIDC (OpenID Connect)**, camada de identidade construída sobre o OAuth2.
 
-**Casdoor** é um IAM (Identity and Access Management) open source que implementa OIDC/OAuth2, permitindo centralizar autenticação, gerenciar usuários e integrar aplicações como clientes OAuth2 — sem depender de um provedor de nuvem específico.
+**Casdoor** é um IAM (Identity and Access Management) open source que implementa OIDC/OAuth2, permitindo centralizar autenticação, gerenciar usuários e integrar aplicações como clientes OAuth2 sem depender de um provedor de nuvem específico.
 
-Este lab demonstra esse fluxo de ponta a ponta: um cluster Kubernetes local (Kind) com MySQL como backend de dados do Casdoor, e uma aplicação Flask registrada como cliente OAuth2. Além disso, explora como um agente de IA (**Claude**) pode interagir diretamente com o IdP via **MCP (Model Context Protocol)** — criando usuários, listando aplicações e gerenciando roles com comandos em linguagem natural, sem abrir a interface web.
+Este lab demonstra esse fluxo de ponta a ponta: um cluster Kubernetes local (Kind) com MySQL como backend de dados do Casdoor, e uma aplicação Flask registrada como cliente OAuth2. Além disso, explora como um agente de IA (**Claude**) pode interagir diretamente com o IdP via **MCP (Model Context Protocol)** criando usuários, listando aplicações e gerenciando roles com comandos em linguagem natural, sem abrir a interface web.
 
 Esse padrão tem impacto direto na administração de identidade em larga escala: operações repetitivas como onboarding de usuários, auditoria de aplicações registradas e rotação de permissões deixam de exigir navegação manual no painel e passam a ser expressas como instruções ao agente.
 
 > [!IMPORTANT]
-> O objetivo central é entender o fluxo OIDC — como uma aplicação delega autenticação a um Identity Provider e recebe de volta um token com os dados do usuário — e como a integração com IA via MCP pode simplificar a operação do IdP no dia a dia.
+> O objetivo central é entender o fluxo OIDC como uma aplicação delega autenticação a um Identity Provider e recebe de volta um token com os dados do usuário e como a integração com IA via MCP pode simplificar a operação do IdP no dia a dia.
 
 ---
 
@@ -81,10 +81,10 @@ casdoor-lab/
 │       └── index.html      # UI de login e perfil do usuário
 └── k8s/
     ├── namespace.yaml       # Namespace: casdoor
-    ├── mysql.yaml           # MySQL 8.0 — Secret, PVC, Deployment, Service
+    ├── mysql.yaml           # MySQL 8.0 Secret, PVC, Deployment, Service
     ├── casdoor-config.yaml  # ConfigMap com app.conf
-    ├── casdoor.yaml         # Casdoor — Deployment + Service
-    └── app.yaml             # Flask demo — Deployment + Service
+    ├── casdoor.yaml         # Casdoor Deployment + Service
+    └── app.yaml             # Flask demo Deployment + Service
 ```
 
 ---
@@ -127,7 +127,7 @@ make forward-all # port-forward: Casdoor :8000 e Flask :5000
 
 Antes de testar o login, registre a Flask demo como cliente OAuth2:
 
-1. Acesse **http://localhost:8000** — credenciais: `admin` / `123`
+1. Acesse **http://localhost:8000** credenciais: `admin` / `123`
 2. Vá em **Applications → Add** e preencha:
 
 | Campo | Valor |
@@ -138,7 +138,7 @@ Antes de testar o login, registre a Flask demo como cliente OAuth2:
 | Redirect URL | `http://localhost:5000/callback` |
 
 3. Salve e acesse **http://localhost:5000**
-4. Clique em **Entrar com Casdoor** — você será redirecionado para o Casdoor, autenticado e trazido de volta com os dados do perfil
+4. Clique em **Entrar com Casdoor** você será redirecionado para o Casdoor, autenticado e trazido de volta com os dados do perfil
 
 A aplicação `flask-demo` aparecerá listada no painel do Casdoor junto com as demais aplicações registradas:
 
@@ -154,7 +154,7 @@ Após autenticar, a Flask exibe o perfil do usuário com os claims do token OIDC
 
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) é um protocolo aberto que padroniza como ferramentas externas expõem capacidades para modelos de linguagem. O Casdoor expõe um endpoint MCP nativo em `/api/mcp`, e este lab inclui também um servidor MCP customizado com operações mais abrangentes.
 
-### Abordagem 1 — Endpoint nativo do Casdoor (Claude Code CLI)
+### Abordagem 1 Endpoint nativo do Casdoor (Claude Code CLI)
 
 O Casdoor 1.x expõe nativamente um servidor MCP em `/api/mcp` via HTTP/SSE. O Claude Code se conecta diretamente a ele:
 
@@ -175,7 +175,7 @@ Ferramentas disponíveis neste endpoint:
 | `update_application` | Atualiza configurações de uma aplicação |
 | `delete_application` | Remove uma aplicação |
 
-### Abordagem 2 — Servidor MCP customizado (Node.js)
+### Abordagem 2 Servidor MCP customizado (Node.js)
 
 Para operações além do gerenciamento de aplicações (usuários, roles, organizações), este lab inclui um servidor MCP próprio em `~/.claude/mcp-servers/casdoor/`. Ele foi construído com o SDK oficial do MCP e autentica no Casdoor via Resource Owner Password Credentials.
 
@@ -215,7 +215,7 @@ Os usuários criados via MCP aparecem imediatamente na interface do Casdoor:
 
 ![Lista de usuários no Casdoor](docs/images/casdoor-users.png)
 
-### Abordagem 3 — Claude Desktop via mcp-remote
+### Abordagem 3 Claude Desktop via mcp-remote
 
 Para usar o endpoint nativo do Casdoor no Claude Desktop, adicione ao `claude_desktop_config.json`:
 
@@ -242,7 +242,7 @@ O `mcp-remote` faz a ponte entre o protocolo stdio local e o endpoint HTTP do Ca
 
 ### Exemplos de uso
 
-Com o lab rodando e qualquer uma das abordagens configurada, você pode pedir ao Claude em linguagem natural — ele chama o MCP automaticamente:
+Com o lab rodando e qualquer uma das abordagens configurada, você pode pedir ao Claude em linguagem natural ele chama o MCP automaticamente:
 
 > *"Liste os usuários cadastrados no Casdoor"*
 >
@@ -252,7 +252,7 @@ Com o lab rodando e qualquer uma das abordagens configurada, você pode pedir ao
 >
 > *"Liste todas as aplicações registradas"*
 
-Abaixo, o Claude Code listando os usuários e em seguida deletando `teste3` via servidor MCP customizado — tudo em linguagem natural, sem tocar na UI do Casdoor:
+Abaixo, o Claude Code listando os usuários e em seguida deletando `teste3` via servidor MCP customizado tudo em linguagem natural, sem tocar na UI do Casdoor:
 
 ![Claude Code gerenciando usuários do Casdoor via MCP](docs/images/claude-code-delete-user.png)
 
@@ -303,24 +303,24 @@ make app-restart  # reinicia o pod
 
 ### 🔐 Autenticação e Identidade
 
-- [Casdoor](https://casdoor.ai/) — IAM open source com suporte a OIDC, OAuth2, SAML e LDAP
-- [OpenID Connect (OIDC)](https://openid.net/connect/) — camada de identidade sobre OAuth2 que padroniza autenticação e emissão de tokens
-- [OAuth 2.0](https://oauth.net/2/) — framework de autorização que define os fluxos de concessão de acesso
+- [Casdoor](https://casdoor.ai/) IAM open source com suporte a OIDC, OAuth2, SAML e LDAP
+- [OpenID Connect (OIDC)](https://openid.net/connect/) camada de identidade sobre OAuth2 que padroniza autenticação e emissão de tokens
+- [OAuth 2.0](https://oauth.net/2/) framework de autorização que define os fluxos de concessão de acesso
 
 ### ☸️ Kubernetes e Infraestrutura
 
-- [Kind (Kubernetes in Docker)](https://kind.sigs.k8s.io/) — cluster Kubernetes local usando containers Docker como nós
-- [kubectl](https://kubernetes.io/docs/reference/kubectl/) — CLI oficial do Kubernetes
-- [Kubernetes Services](https://kubernetes.io/docs/concepts/services-networking/service/) — exposição e descoberta de serviços no cluster
+- [Kind (Kubernetes in Docker)](https://kind.sigs.k8s.io/) cluster Kubernetes local usando containers Docker como nós
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/) CLI oficial do Kubernetes
+- [Kubernetes Services](https://kubernetes.io/docs/concepts/services-networking/service/) exposição e descoberta de serviços no cluster
 
 ### 🤖 MCP
 
-- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — protocolo aberto para expor capacidades de ferramentas externas a modelos de linguagem
-- [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) — SDK oficial Node.js para construir servidores e clientes MCP
-- [mcp-remote](https://www.npmjs.com/package/mcp-remote) — ponte entre o protocolo MCP local (stdio) e servidores MCP remotos via HTTP/SSE
-- [Casdoor MCP Server](https://casdoor.org/docs/integration/mcp) — endpoint MCP nativo do Casdoor em `/api/mcp`
+- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) protocolo aberto para expor capacidades de ferramentas externas a modelos de linguagem
+- [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) SDK oficial Node.js para construir servidores e clientes MCP
+- [mcp-remote](https://www.npmjs.com/package/mcp-remote) ponte entre o protocolo MCP local (stdio) e servidores MCP remotos via HTTP/SSE
+- [Casdoor MCP Server](https://casdoor.org/docs/integration/mcp) endpoint MCP nativo do Casdoor em `/api/mcp`
 
 ### 🐍 Aplicação
 
-- [Flask](https://flask.palletsprojects.com/) — micro-framework web Python usado na demo
-- [Authlib](https://authlib.org/) — biblioteca Python para OAuth2 e OIDC usada na Flask demo
+- [Flask](https://flask.palletsprojects.com/) micro-framework web Python usado na demo
+- [Authlib](https://authlib.org/) biblioteca Python para OAuth2 e OIDC usada na Flask demo
