@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casdoor Lab — Flask Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: #111;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: #666;
+      font-size: .9rem;
+      margin-bottom: 32px;
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 16px;
+      border: 3px solid #e5e7eb;
+    }
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #6366f1;
+      color: #fff;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .user-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 4px;
+    }
+    .user-email {
+      color: #666;
+      font-size: .9rem;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-block;
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      border-radius: 999px;
+      padding: 2px 12px;
+      font-size: .8rem;
+      margin-bottom: 28px;
+    }
+    .info-grid {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: .85rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: #666; }
+    .info-value { color: #111; font-weight: 500; word-break: break-all; }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .85; }
+    .btn-primary { background: #6366f1; color: #fff; }
+    .btn-secondary { background: #f1f5f9; color: #374151; }
+    .footer {
+      margin-top: 32px;
+      font-size: .75rem;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🔐</div>
+    <h1>Casdoor Lab</h1>
+    <p class="subtitle">Demo de autenticação OIDC com Flask</p>
+
+    {% if user %}
+      {% if user.picture %}
+        <img class="avatar" src="{{ user.picture }}" alt="avatar" />
+      {% else %}
+        <div class="avatar-placeholder">{{ (user.name or user.sub or '?')[0] | upper }}</div>
+      {% endif %}
+
+      <div class="user-name">{{ user.name or user.preferred_username or user.sub }}</div>
+      <div class="user-email">{{ user.email or '—' }}</div>
+      <div class="badge">✓ Autenticado via Casdoor</div>
+
+      <div class="info-grid">
+        {% for key, value in user.items() %}
+          <div class="info-row">
+            <span class="info-label">{{ key }}</span>
+            <span class="info-value">{{ value }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <a class="btn btn-secondary" href="/logout">Sair</a>
+
+    {% else %}
+      <p style="color:#666; margin-bottom:32px; font-size:.95rem;">
+        Faça login com sua conta do Casdoor para ver suas informações de perfil.
+      </p>
+      <a class="btn btn-primary" href="/login">Entrar com Casdoor</a>
+    {% endif %}
+
+    <div class="footer">casdoor-lab · OIDC demo</div>
+  </div>
+</body>
+</html>

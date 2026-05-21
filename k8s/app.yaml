@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-demo
+  namespace: casdoor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-demo
+  template:
+    metadata:
+      labels:
+        app: flask-demo
+    spec:
+      containers:
+        - name: flask-demo
+          image: casdoor-flask-demo:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: CASDOOR_EXTERNAL_URL
+              value: "http://localhost:8000"
+            - name: CASDOOR_INTERNAL_URL
+              value: "http://casdoor-svc:8000"
+            - name: CLIENT_ID
+              value: "flask-demo"
+            - name: CLIENT_SECRET
+              value: "flask-demo-secret"
+            - name: REDIRECT_URI
+              value: "http://localhost:5000/callback"
+            - name: SECRET_KEY
+              value: "troque-em-producao"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-demo-svc
+  namespace: casdoor
+spec:
+  selector:
+    app: flask-demo
+  ports:
+    - port: 5000
+      targetPort: 5000
